@@ -1,8 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
-// Initialize express app
+const cors = require("cors"); // CORS 패키지를 불러옵니다.
+
 const app = express();
+
+// CORS 미들웨어를 사용합니다.
+app.use(cors());
 
 // Use body-parser middleware to handle POST data
 app.use(bodyParser.json());
@@ -31,7 +35,7 @@ app.post("/post-endpoint", (req, res) => {
 });
 
 // Start server
-const PORT = 3000;
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
