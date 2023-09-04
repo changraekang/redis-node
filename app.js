@@ -38,5 +38,5 @@ app.post("/post-endpoint", (req, res) => {
 const PORT = 5000;
 const HOST = "0.0.0.0";
 app.listen(PORT, HOST, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Running on http://${HOST}:${PORT}`);
 });
