@@ -1,40 +1,59 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-
-const cors = require("cors"); // CORS 패키지를 불러옵니다.
+const cors = require("cors");
+const redis = require("redis"); // Redis 라이브러리를 불러옵니다.
 
 const app = express();
 
-// CORS 미들웨어를 사용합니다.
-app.use(cors());
+// Redis 클라이언트를 생성합니다.
+const client = redis.createClient();
 
-// Use body-parser middleware to handle POST data
+client.on("error", function (error) {
+  console.error(error);
+});
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Handle GET request at root
 app.get("/", (req, res) => {
   res.send("Hello, world!");
 });
 
-// Handle POST request at /post-endpoint
 app.post("/post-endpoint", (req, res) => {
-  // Access POST data with req.body
   const { name, age } = req.body;
 
   if (!name || !age) {
     return res.status(400).send("Missing parameters");
   }
 
-  // Do something with the data (e.g., save to database, etc.)
+  // Redis에 데이터를 저장합니다.
+  client.set(`user:${name}`, age);
 
-  // Send a response
   res.json({
     message: `Hello, ${name}! You are ${age} years old.`,
   });
 });
 
-// Start server
+app.get("/get-endpoint/:name", (req, res) => {
+  const { name } = req.params;
+
+  // Redis에서 데이터를 가져옵니다.
+  client.get(`user:${name}`, (err, reply) => {
+    if (err) {
+      return res.status(500).send(err.toString());
+    }
+
+    if (reply) {
+      return res.json({
+        message: `Hello, ${name}! You are ${reply} years old.`,
+      });
+    } else {
+      return res.status(404).send("Not found");
+    }
+  });
+});
+
 const PORT = 5000;
 const HOST = "0.0.0.0";
 app.listen(PORT, HOST, () => {
