@@ -7,11 +7,21 @@ const app = express();
 
 // Redis 클라이언트를 생성합니다.
 
-const client = createClient();
+async function run() {
+  const client = createClient();
 
-client.on("error", (err) => console.log("Redis Client Error", err));
+  client.on("error", (err) => console.log("Redis Client Error", err));
 
-await client.connect();
+  try {
+    await client.connect();
+    // 이후에 Redis 작업을 수행합니다.
+    console.log("Connected to Redis");
+  } catch (err) {
+    console.error("Could not connect to Redis:", err);
+  }
+}
+
+run();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
