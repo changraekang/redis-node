@@ -43,6 +43,7 @@ app.post("/post-endpoint", async (req, res) => {
       message: `Hello, ${name}!`,
     });
   } catch (err) {
+    console.log(err, ":::::::err");
     res.status(500).send("Error interacting with Redis");
   }
 });
