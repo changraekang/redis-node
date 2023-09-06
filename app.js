@@ -38,7 +38,7 @@ app.post("/post-endpoint", async (req, res) => {
   }
 
   try {
-    await client.lpush("name", name);
+    await client.lpush("name", `${name}`);
     res.json({
       message: `Hello, ${name}!`,
     });
