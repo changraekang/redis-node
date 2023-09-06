@@ -38,9 +38,9 @@ app.post("/post-endpoint", async (req, res) => {
   }
 
   try {
-    await client.set(name, age);
+    await client.lpush("name", name);
     res.json({
-      message: `Hello, ${name}! You are ${age} years old.`,
+      message: `Hello, ${name}!`,
     });
   } catch (err) {
     res.status(500).send("Error interacting with Redis");
@@ -51,10 +51,11 @@ app.get("/get-endpoint/:name", async (req, res) => {
   const { name } = req.params;
 
   try {
-    const value = await client.get(name);
+    const value = await client.lrange("name", 0, -1);
+    const num = await client.llen("name");
     if (value) {
       return res.json({
-        message: `Hello, ${name}! You are ${value} years old.`,
+        message: `Hello, ${value}! name number is ${num}.`,
       });
     } else {
       return res.status(404).send("Name not found in Redis");
