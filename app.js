@@ -52,8 +52,8 @@ app.get("/get-endpoint/:name", async (req, res) => {
   const { name } = req.params;
 
   try {
-    const value = await client.lrange("name", 0, -1);
-    const num = await client.llen("name");
+    const value = await client.lrange("mylist", 0, -1);
+    const num = await client.llen("mylist");
     if (value) {
       return res.json({
         message: `Hello, ${value}! name number is ${num}.`,
