@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 
 app.post("/post-endpoint", async (req, res) => {
   const { name, age } = req.body;
-
+  console.log(name, age, ":::::::test");
   if (!name || !age) {
     return res.status(400).send("Missing parameters");
   }
