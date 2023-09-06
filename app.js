@@ -38,7 +38,7 @@ app.post("/post-endpoint", async (req, res) => {
   }
 
   try {
-    await client.set("mylist", "two");
+    await client.lpush("mylist", "one", "two");
     res.json({
       message: `Hello, ${name}!`,
     });
@@ -52,7 +52,7 @@ app.get("/get-endpoint/:name", async (req, res) => {
   const { name } = req.params;
 
   try {
-    const value = await client.get("mylist");
+    const value = await client.lrange("mylist", 0, -1);
     const num = await client.llen("mylist");
     if (value) {
       return res.json({
