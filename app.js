@@ -38,7 +38,7 @@ app.post("/post-endpoint", async (req, res) => {
   }
 
   try {
-    await client.lpush("mylist", "one", "two");
+    await client.lPush("mylist", name, age);
     res.json({
       message: `Hello, ${name}!`,
     });
@@ -52,8 +52,8 @@ app.get("/get-endpoint/:name", async (req, res) => {
   const { name } = req.params;
 
   try {
-    const value = await client.lrange("mylist", 0, -1);
-    const num = await client.llen("mylist");
+    const value = await client.lRange("mylist", 0, -1);
+    const num = await client.lLen("mylist");
     if (value) {
       return res.json({
         message: `Hello, ${value}! name number is ${num}.`,
