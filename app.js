@@ -32,6 +32,7 @@ app.get("/", (req, res) => {
 
 app.post("/post-endpoint", async (req, res) => {
   const { order, price } = req.body;
+  console.log(req.body, ":::::::err");
   if (!order || !price) {
     return res.status(400).send("Missing parameters");
   }
@@ -46,6 +47,7 @@ app.post("/post-endpoint", async (req, res) => {
     console.log(err, ":::::::err");
     res.status(500).send("Error interacting with Redis");
   }
+  console.log(req.body, ":::::::err");
 });
 
 app.get("/get-endpoint/:name", async (req, res) => {
