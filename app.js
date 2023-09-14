@@ -8,7 +8,7 @@ const app = express();
 let client; // 전역 변수로 설정
 
 async function run() {
-  client = createClient({ url: "http://localhost", port: 6379 });
+  client = createClient({ url: "redis://localhost", port: 6379 });
 
   client.on("error", (err) => console.log("Redis Client Error", err));
 
@@ -32,22 +32,26 @@ app.get("/", (req, res) => {
 
 app.post("/post-endpoint", async (req, res) => {
   const { order, price } = req.body;
-  console.log(req.body, ":::::::err");
   if (!order || !price) {
     return res.status(400).send("Missing parameters");
   }
   let now = new Date();
-  let arrayData = [{ order: order, price: price, timesmp: now }];
+  let arrayData = { order: order, price: price, timestamp: now };
+
+  // 객체를 문자열로 직렬화
+  const serializedData = JSON.stringify(arrayData);
+
   try {
-    await client.lPush("mylist", arrayData);
+    // 데이터를 Redis 리스트에 추가
+    await client.lPush("mylist", serializedData);
+
     res.json({
-      message: `Hello, ${arrayData}!`,
+      message: `Data inserted: ${serializedData}`,
     });
   } catch (err) {
     console.log(err, ":::::::err");
     res.status(500).send("Error interacting with Redis");
   }
-  console.log(req.body, ":::::::err");
 });
 
 app.get("/get-endpoint/:name", async (req, res) => {
