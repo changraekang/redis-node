@@ -31,16 +31,16 @@ app.get("/", (req, res) => {
 });
 
 app.post("/post-endpoint", async (req, res) => {
-  const { name, age } = req.body;
-  console.log(name, age, ":::::::test");
-  if (!name || !age) {
+  const { order, price } = req.body;
+  if (!order || !price) {
     return res.status(400).send("Missing parameters");
   }
-
+  let now = new Date();
+  let arrayData = [{ order: order, price: price, timesmp: now }];
   try {
-    await client.lPush("mylist", name, age);
+    await client.lPush("mylist", arrayData);
     res.json({
-      message: `Hello, ${name}!`,
+      message: `Hello, ${arrayData}!`,
     });
   } catch (err) {
     console.log(err, ":::::::err");
