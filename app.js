@@ -8,7 +8,7 @@ const app = express();
 let client; // 전역 변수로 설정
 
 async function run() {
-  client = createClient();
+  client = createClient({ url: "http://localhost", port: 6379 });
 
   client.on("error", (err) => console.log("Redis Client Error", err));
 
