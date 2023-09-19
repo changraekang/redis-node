@@ -35,7 +35,7 @@ app.post("/post-endpoint", async (req, res) => {
   if (!order || !price) {
     return res.status(400).send("Missing parameters");
   }
-  let now = new Date();
+  let now = new Date().now;
   let arrayData = { order: order, price: price, timestamp: now };
 
   // 객체를 문자열로 직렬화
@@ -43,7 +43,7 @@ app.post("/post-endpoint", async (req, res) => {
 
   try {
     // 데이터를 Redis 리스트에 추가
-    await client.lPush("mylist", serializedData);
+    await client.hSet("Order-List", order, price);
 
     res.json({
       message: `Data inserted: ${serializedData}`,
@@ -54,15 +54,14 @@ app.post("/post-endpoint", async (req, res) => {
   }
 });
 
-app.get("/get-endpoint/:name", async (req, res) => {
+app.get("/get-endpoint/", async (req, res) => {
   const { name } = req.params;
 
   try {
-    const value = await client.lRange("mylist", 0, -1);
-    const num = await client.lLen("mylist");
+    const num = await client.hGetAll("Order-List");
     if (value) {
       return res.json({
-        message: `Hello, ${value}! name number is ${num}.`,
+        message: num,
       });
     } else {
       return res.status(404).send("Name not found in Redis");
